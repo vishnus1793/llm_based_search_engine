@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM-Powered Search Aggregator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-gray-800">LLM-Powered Search Aggregator</h1>
+        
+        <div class="max-w-2xl mx-auto mb-8">
+            <div class="flex gap-2">
+                <input type="text" id="searchInput" 
+                       class="flex-1 p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       placeholder="Enter your search query...">
+                <button onclick="performSearch()" 
+                        class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors">
+                    Search
+                </button>
+            </div>
+        </div>
+
+        <div id="results" class="max-w-4xl mx-auto space-y-4">
+            <!-- Results will be populated here -->
+        </div>
+
+        <div id="loading" class="hidden text-center py-8">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+            <p class="mt-2 text-gray-600">Searching and analyzing results...</p>
+        </div>
+    </div>
+
+    <script>
+        async function performSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            if (!query) return;
+
+            const loading = document.getElementById('loading');
+            const results = document.getElementById('results');
+            
+            loading.classList.remove('hidden');
+            results.innerHTML = '';
+
+            try {
+                const response = await fetch('/search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query, num_results: 5 }),
+                });
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    results.innerHTML = `<div class="text-red-500 text-center">${data.error}</div>`;
+                    return;
+                }
+
+                results.innerHTML = data.results.map(result => `
+                    <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                        <div class="flex justify-between items-start mb-2">
+                            <h2 class="text-xl font-semibold text-blue-600">
+                                <a href="${result.link}" target="_blank" class="hover:underline">${result.title}</a>
+                            </h2>
+                            <span class="text-sm text-gray-500">${result.source}</span>
+                        </div>
+                        <p class="text-gray-600 mb-2">${result.snippet}</p>
+                        <div class="text-sm text-gray-500">
+                            <span class="bg-green-100 text-green-800 px-2 py-1 rounded">
+                                Relevance: ${result.relevance_score}%
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                results.innerHTML = `<div class="text-red-500 text-center">An error occurred while searching.</div>`;
+            } finally {
+                loading.classList.add('hidden');
+            }
+        }
+
+        // Allow search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html> 
