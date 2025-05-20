@@ -14,7 +14,7 @@ This project aggregates search results from multiple search engines (Google and 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/vishnus1793/llm_based_search_engine.git
 cd llm_based_search_engine
 ```
 
