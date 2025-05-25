@@ -1,0 +1,8 @@
+Local Processing: No need for OpenAI API keys
+
+Better Context Handling: LLaMAIndex manages large documents effectively
+
+Customizable: Easily switch models (try mistral, phi3, etc.)
+
+Structured Outputs: Tree summarization provides more organized results
+The code maintains all the previous benefits (caching, parallel fetching, etc.) while adding the power of local LLM processing through LLaMAIndex.
