@@ -2,7 +2,6 @@
 
 A Python tool that searches multiple engines, fetches web content, and generates AI-powered summaries using local LLM (Ollama).
 
-![Project Demo](demo.gif) *(Optional: Add a demo GIF later)*
 
 ## Features
 
